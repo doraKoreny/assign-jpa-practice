@@ -26,10 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SeriesRepositoriesTest {
 
     @Autowired
-    private SeriesRepositories seriesRepository;
+    private SeriesRepository seriesRepository;
 
     @Autowired
-    private SeasonRepositories seasonRepository;
+    private SeasonRepository seasonRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;

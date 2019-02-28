@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -32,6 +33,10 @@ public class Series {
 
     @Transient
     private int numberOfSeasons;
+
+    @ElementCollection
+    @Singular
+    private List<String> actors;
 
     public void calculateNumberOfSeasons() {
         numberOfSeasons = seasons.size();

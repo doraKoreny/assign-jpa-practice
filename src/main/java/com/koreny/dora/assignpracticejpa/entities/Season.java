@@ -24,5 +24,10 @@ public class Season {
     @ManyToOne
     private Series series;
 
+    @Singular
+    @OneToMany(mappedBy = "season", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @EqualsAndHashCode.Exclude
+    private Set<Episode> episodes;
+
 
 }

@@ -1,12 +1,10 @@
 package com.koreny.dora.assignpracticejpa.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +17,7 @@ public class Series {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private LocalDate releaseDate;
@@ -26,6 +25,16 @@ public class Series {
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
+    @Singular
+    @OneToMany(mappedBy = "series",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @EqualsAndHashCode.Exclude
+    private Set<Season> seasons;
 
+    @Transient
+    private int numberOfSeasons;
+
+    public void calculateNumberOfSeasons() {
+        numberOfSeasons = seasons.size();
+    }
 
 }

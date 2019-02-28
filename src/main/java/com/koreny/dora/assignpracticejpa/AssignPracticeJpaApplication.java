@@ -44,6 +44,16 @@ public class AssignPracticeJpaApplication {
                     .length(LocalTime.of(0, 22))
                     .build();
 
+            Episode episode3 = Episode.builder()
+                    .title("The One with the blabla")
+                    .length(LocalTime.of(0, 22))
+                    .build();
+
+            Episode episode4 = Episode.builder()
+                    .title("The One with the Christmas Tatu")
+                    .length(LocalTime.of(0, 22))
+                    .build();
+
             Season season1 = Season.builder()
                     .name("Season 1")
                     .releaseDate(LocalDate.of(1994, 9, 14))
@@ -54,11 +64,13 @@ public class AssignPracticeJpaApplication {
             Season season2 = Season.builder()
                     .name("Season 2")
                     .releaseDate(LocalDate.of(1995, 9, 21))
+                    .episode(episode3)
                     .build();
 
             Season season3 = Season.builder()
                     .name("Season 3")
                     .releaseDate(LocalDate.of(1996, 9, 21))
+                    .episode(episode4)
                     .build();
 
             Season season4 = Season.builder()
@@ -77,16 +89,26 @@ public class AssignPracticeJpaApplication {
                     .releaseDate(LocalDate.of(1994,9,14))
                     .season(season1)
                     .season(season2)
+                    .season(season3)
+                    .season(season4)
+                    .season(season5)
                     .actor("Jennifer Aniston")
                     .actor("David Schwimmer")
+                    .actor("Matt LeBlanc")
+                    .actor("Matthew Perry")
+                    .actor("Lisa Kudrow")
+                    .actor("Courtney Cox Arquette")
                     .build();
             friends.calculateNumberOfSeasons();
 
-
             season1.setSeries(friends);
+            season2.setSeries(friends);
+
             episode1.setSeason(season1);
             episode2.setSeason(season1);
-            season2.setSeries(friends);
+            episode3.setSeason(season2);
+            episode4.setSeason(season2);
+
             seriesRepository.save(friends);
 
         };

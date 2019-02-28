@@ -1,5 +1,6 @@
 package com.koreny.dora.assignpracticejpa.repositories;
 
+import com.koreny.dora.assignpracticejpa.entities.Episode;
 import com.koreny.dora.assignpracticejpa.entities.Genre;
 import com.koreny.dora.assignpracticejpa.entities.Season;
 import com.koreny.dora.assignpracticejpa.entities.Series;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -30,6 +32,9 @@ public class SeriesRepositoriesTest {
 
     @Autowired
     private SeasonRepository seasonRepository;
+
+    @Autowired
+    private EpisodeRepository episodeRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -121,5 +126,33 @@ public class SeriesRepositoriesTest {
         seriesRepository.deleteAll();
         assertThat(seasonRepository.findAll())
                 .hasSize(0);
+    }
+
+    @Test
+    public void episodesAndSeasonsAreDeletedWithSeries() {
+        Set<Episode> episodes = IntStream.range(1,10)
+                .boxed()
+                .map(integer -> Episode.builder().title("Episode" + integer).build())
+                .collect(Collectors.toSet());
+
+        Season season1 = Season.builder()
+                .name("Season1")
+                .episodes(episodes)
+                .build();
+
+        Series friends = Series.builder()
+                .season(season1)
+                .name("Friends")
+                .build();
+
+        season1.setSeries(friends);
+        seriesRepository.save(friends);
+
+        assertThat(episodeRepository.findAll())
+                .hasSize(9)
+                .anyMatch(episode -> episode.getTitle().equals("Episode9"));
+
+        seriesRepository.deleteAll();
+        assertThat(episodeRepository.findAll()).hasSize(0);
     }
 }

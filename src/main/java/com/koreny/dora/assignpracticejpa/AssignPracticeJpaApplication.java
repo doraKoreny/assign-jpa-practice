@@ -18,10 +18,10 @@ import java.time.LocalDate;
 public class AssignPracticeJpaApplication {
 
     @Autowired
-    private SeriesRepositories seriesRepositories;
+    private SeriesRepositories seriesRepository;
 
     @Autowired
-    private SeasonRepositories seasonRepositories;
+    private SeasonRepositories seasonRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(AssignPracticeJpaApplication.class, args);
@@ -53,7 +53,7 @@ public class AssignPracticeJpaApplication {
 
             season1.setSeries(friends);
             season2.setSeries(friends);
-            seriesRepositories.save(friends);
+            seriesRepository.save(friends);
 
         };
     }

@@ -14,8 +14,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -24,10 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SeriesRepositoriesTest {
 
     @Autowired
-    private SeriesRepositories seriesRepositories;
+    private SeriesRepositories seriesRepository;
 
     @Autowired
-    private SeasonRepositories seasonRepositories;
+    private SeasonRepositories seasonRepository;
 
     @Autowired
     private TestEntityManager testEntityManager;
@@ -39,9 +41,9 @@ public class SeriesRepositoriesTest {
                 .releaseDate(LocalDate.of(1994, 9, 22))
                 .build();
 
-        seriesRepositories.save(friends);
+        seriesRepository.save(friends);
 
-        List<Series> seriesList = seriesRepositories.findAll();
+        List<Series> seriesList = seriesRepository.findAll();
         assertThat(seriesList).hasSize(1);
     }
 
@@ -51,7 +53,7 @@ public class SeriesRepositoriesTest {
                 .releaseDate(LocalDate.of(1994, 9, 14))
                 .build();
 
-        seriesRepositories.save(series);
+        seriesRepository.save(series);
     }
 
     @Test
@@ -74,10 +76,50 @@ public class SeriesRepositoriesTest {
         friends.calculateNumberOfSeasons();
         assertThat(friends.getNumberOfSeasons()).isGreaterThanOrEqualTo(2);
 
-        seriesRepositories.save(friends);
+        seriesRepository.save(friends);
         testEntityManager.clear();
 
-        List<Series> series = seriesRepositories.findAll();
+        List<Series> series = seriesRepository.findAll();
         assertThat(series).allMatch(series1 -> series1.getNumberOfSeasons() == 0);
+    }
+
+    @Test
+    public void seasonsArePersistentWithSeries() {
+        Set<Season> seasons = IntStream.range(1,11)
+                .boxed()
+                .map(integer -> Season.builder().name("Season" + integer).build())
+                .collect(Collectors.toSet());
+
+        Series friends = Series.builder()
+                .name("Friends")
+                .releaseDate(LocalDate.of(1994,9,14))
+                .genre(Genre.COMEDY)
+                .seasons(seasons)
+                .build();
+
+        seriesRepository.save(friends);
+
+        assertThat(seasonRepository.findAll())
+                .hasSize(10)
+                .anyMatch(season -> season.getName().equals("Season10"));
+    }
+
+    @Test
+    public void seasonsAreDeletedWithSeries() {
+        Set<Season> seasons = IntStream.range(1,11)
+                .boxed()
+                .map(integer -> Season.builder().name("Season" + integer).build())
+                .collect(Collectors.toSet());
+
+        Series friends = Series.builder()
+                .name("Friends")
+                .seasons(seasons)
+                .build();
+
+        seriesRepository.save(friends);
+
+        seriesRepository.deleteAll();
+        assertThat(seasonRepository.findAll())
+                .hasSize(0);
     }
 }

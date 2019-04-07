@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
